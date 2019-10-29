@@ -96,7 +96,7 @@ def getEnvironmentDetails(driver):
     response.close()
     ip = node['proxyId'].replace("http://","").replace(":5555","")
     try:
-        host = socket.gethostbyaddr(node['proxyId'].replace("http://","").replace(":5555",""))
+        host = socket.gethostbyaddr(ip)[0]
     except:
         host = ip
     environment = {
