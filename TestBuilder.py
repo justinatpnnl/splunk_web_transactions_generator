@@ -94,7 +94,7 @@ def getEnvironmentDetails(driver):
     response = urllib2.urlopen(req)
     node = json.loads(response.read())
     response.close()
-    ip = node['proxyId'].replace("http://","").replace(":5555","")
+    ip = re.search('\/\/([^\:]+)\:', node.get('proxyId')).group(1)
     try:
         host = socket.gethostbyaddr(ip)[0]
     except:
