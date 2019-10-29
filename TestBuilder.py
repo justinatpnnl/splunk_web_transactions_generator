@@ -306,6 +306,7 @@ class TestSuite(unittest.TestCase):
                             elif result not in [True, "True", "true", 1]:
                                 failed = dependency
             self.assertEqual(failed, False)
+            self.test.TestFinish()
             info['status'] = "Passed"
             self.test.TestResults(info)
             return True
