@@ -33,6 +33,7 @@ class TestResults():
             "Time": str(time.strftime('%Y-%m-%d %H:%M:%S')),
             "application": {
                 "item_id": app["ITEM_ID"],
+                "item_name": app.get("ITEM_NAME", app["ITEM_ID"]),
                 "ip": self.ip,
                 "server": self.server.lower(),
                 "url": app["URL"]
