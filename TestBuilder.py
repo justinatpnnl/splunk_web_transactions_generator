@@ -16,6 +16,7 @@ import unittest, platform, re, json, urllib2, socket, os
 from ua_parser import user_agent_parser
 from HTMLParser import HTMLParser
 import time
+from TestConfig import TestSettings
 
 
 class TestResults():
@@ -86,7 +87,7 @@ def getEnvironmentDetails(driver):
     ua = user_agent_parser.Parse(ua_string)
     # GET NODE INFO
     session = driver.session_id
-    url = "http://localhost:4444/grid/api/testsession?session={0}".format(session)
+    url = "{0}://{1}:{2}/grid/api/testsession?session={3}".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'), session)
     req = urllib2.Request(url)
     req.add_header("Content-Type", "application/json")
     response = urllib2.urlopen(req)
@@ -167,12 +168,9 @@ def TestGenerator(app, screenshot_always=False):
     return applicationTest
 
 def launchBrowser(browser):
-    ##TODO: Add to the setup, default to localhost
-    hub = 'http://localhost:4444/wd/hub'
-
-    ##TODO: Add to the setup
-    # Comma separated string of trusted domains for Windows Authentication
-    sitelist = ""
+    # Get Selenium Hub and Browser settings from settings.conf
+    hub = "{0}://{1}:{2}/wd/hub".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'))
+    sitelist = TestSettings.get("BrowserSettings", "sitelist")
 
     if browser == "Chrome":
         # START CHROME BROWSER
