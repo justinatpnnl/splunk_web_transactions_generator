@@ -321,6 +321,7 @@ class TestSuite(unittest.TestCase):
             self.test.TestFinish()
             info['status'] = "Failed"
             info['error'] = "Failed to parse Health Check results"
+            self.test.TestResults(info)
             return false
 
     def go_to_url(self, **info):
