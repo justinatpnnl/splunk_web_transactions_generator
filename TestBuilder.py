@@ -319,6 +319,7 @@ class TestSuite(unittest.TestCase):
             return False
         except:
             self.test.TestFinish()
+            info['status'] = "Failed"
             info['error'] = "Failed to parse Health Check results"
             return false
 
