@@ -241,6 +241,7 @@ class TestSuite(unittest.TestCase):
 
     def click_element(self, **info):
         try:
+            info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
             self.test.TestStart()
             self.current_element = self.driver.find_element(by=info["element_name"], value=info["element_value"])
             self.current_element.click()
@@ -287,7 +288,7 @@ class TestSuite(unittest.TestCase):
 
     def health_check(self, **info):
         try:
-            info['description'] = "Parse returned Health Check results"
+            info['description'] = "Evaluate Health Check results"
             self.test.TestStart()
             healthcheck = json.loads(strip_tags(self.driver.page_source).strip())
             failed = False
@@ -503,6 +504,7 @@ class TestSuite(unittest.TestCase):
             "css_selector": By.CSS_SELECTOR
         }
 
+        info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
         self.test.TestStart()
         try:
             self.current_element = self.driver.find_element(byCommand.get(info.get("element_name")), info.get("element_value"))
