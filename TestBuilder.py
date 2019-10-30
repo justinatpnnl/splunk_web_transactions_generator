@@ -496,48 +496,28 @@ class TestSuite(unittest.TestCase):
             return result
 
     def find_element(self, **info):
+        byCommand = {
+            "id": By.ID,
+            "xpath": By.XPATH,
+            "link_text": By.LINK_TEXT,
+            "partial_link_text": By.PARTIAL_LINK_TEXT,
+            "name": By.NAME,
+            "tag_name": By.TAG_NAME,
+            "class_name": By.CLASS_NAME,
+            "css_selector": By.CSS_SELECTOR
+        }
+
         self.test.TestStart()
         try:
-            self.current_element = self.driver.find_element(by=info["element_name"], value=info["element_value"])
+            self.current_element = self.driver.find_element(byCommand.get(info.get("element_name")), info.get("element_value"))
             self.test.TestFinish()
             info['status'] = "Passed"
             self.test.TestResults(info)
             return True
-        except NoSuchElementException as e:
+        except:
             self.test.TestFinish()
             info['status'] = "Failed"
             info['error'] = "Unable to locate element: {0}=\"{1}\"".format(info["element_name"], info["element_value"])
-            self.test.TestResults(info)
-            return False
-
-    def assert_tag_contains(self, element, condition, value):
-        self.test.TestStart()
-        info = {
-            "command": "Tag",
-            "element": element,
-            "option": condition,
-            "value": value
-        }
-        try:
-            item = self.driver.find_element_by_tag_name(element).get_attribute('innerText').strip()
-            if condition == "equals":
-                self.assertEquals(item.lower(), value.lower())
-            else:
-                self.assertRegexpMatches(item.lower(),value.lower())
-            self.test.TestFinish()
-            info['status'] = "Passed"
-            self.test.TestResults(info)
-            return True
-        except NoSuchElementException as e:
-            self.test.TestFinish()
-            info['status'] = "Failed"
-            info['error'] = "Unable to locate \"{1}\" tag".format(value)
-            self.test.TestResults(info)
-            return False
-        except AssertionError:
-            self.test.TestFinish()
-            info['status'] = "Failed"
-            info['error'] = "Unexpected result: {0} tag {1} \"{2}\" instead of \"{3}\"".format(element, condition, item, value)
             self.test.TestResults(info)
             return False
 
