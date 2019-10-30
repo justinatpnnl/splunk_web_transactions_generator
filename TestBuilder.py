@@ -5,18 +5,15 @@ from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.webdriver.common.alert import Alert
-from selenium.webdriver.common.by import By #TODO: Currently unused
-from selenium.webdriver.common.keys import Keys #TODO: Currently unused
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.support import expected_conditions as EC #TODO: Currently unused
-from selenium.webdriver.support.ui import Select #TODO: Currently unused
 from selenium.webdriver.support.ui import WebDriverWait
-import unittest, platform, re, json, urllib2, socket, os
 from ua_parser import user_agent_parser
 from HTMLParser import HTMLParser
-import time
 from TestConfig import TestSettings
+import unittest, platform, re, json, urllib2, socket, os
+import time
 
 
 class TestResults():
