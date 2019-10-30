@@ -136,7 +136,6 @@ def TestGenerator(app, screenshot_always=False):
             'Open': self.go_to_url,
             'Verify title': self.check_title,
             'Find': self.find_element,
-            'Tag': self.assert_tag_contains,
             'Click': self.click_element,
             'Type': self.enter_text,
             'Health': self.health_check
