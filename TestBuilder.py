@@ -239,11 +239,40 @@ class TestSuite(unittest.TestCase):
             self.test.TestResults(info)
             return False
 
+    def get_element(self, name, value):
+        byCommand = {
+            "id": By.ID,
+            "xpath": By.XPATH,
+            "link_text": By.LINK_TEXT,
+            "partial_link_text": By.PARTIAL_LINK_TEXT,
+            "name": By.NAME,
+            "tag_name": By.TAG_NAME,
+            "class_name": By.CLASS_NAME,
+            "css_selector": By.CSS_SELECTOR
+        }
+        return self.driver.find_element(byCommand.get(name), value)
+
+    def find_element(self, **info):
+        info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
+        self.test.TestStart()
+        try:
+            self.current_element = self.get_element(info["element_name"], info["element_value"])
+            self.test.TestFinish()
+            info['status'] = "Passed"
+            self.test.TestResults(info)
+            return True
+        except:
+            self.test.TestFinish()
+            info['status'] = "Failed"
+            info['error'] = "Unable to locate element: {0}=\"{1}\"".format(info["element_name"], info["element_value"])
+            self.test.TestResults(info)
+            return False
+
     def click_element(self, **info):
         try:
             info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
             self.test.TestStart()
-            self.current_element = self.driver.find_element(by=info["element_name"], value=info["element_value"])
+            self.current_element = self.get_element(info["element_name"], info["element_value"])
             self.current_element.click()
             self.test.TestFinish()
             info['status'] = "Passed"
@@ -492,33 +521,6 @@ class TestSuite(unittest.TestCase):
             raise
         finally:
             return result
-
-    def find_element(self, **info):
-        byCommand = {
-            "id": By.ID,
-            "xpath": By.XPATH,
-            "link_text": By.LINK_TEXT,
-            "partial_link_text": By.PARTIAL_LINK_TEXT,
-            "name": By.NAME,
-            "tag_name": By.TAG_NAME,
-            "class_name": By.CLASS_NAME,
-            "css_selector": By.CSS_SELECTOR
-        }
-
-        info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
-        self.test.TestStart()
-        try:
-            self.current_element = self.driver.find_element(byCommand.get(info.get("element_name")), info.get("element_value"))
-            self.test.TestFinish()
-            info['status'] = "Passed"
-            self.test.TestResults(info)
-            return True
-        except:
-            self.test.TestFinish()
-            info['status'] = "Failed"
-            info['error'] = "Unable to locate element: {0}=\"{1}\"".format(info["element_name"], info["element_value"])
-            self.test.TestResults(info)
-            return False
 
     def is_alert_present(self):
         try: self.driver.switch_to_alert()
