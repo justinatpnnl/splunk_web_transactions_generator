@@ -324,11 +324,13 @@ class TestSuite(unittest.TestCase):
     def go_to_url(self, **info):
         info['description'] = "Go to url {0}".format(info["url"])
         result = True
+        neterror = False
+        access_error = 0
+        toast_error = 0
         try:
             self.test.TestStart()
             self.driver.get(info["url"])
             try:
-                access_error = 0
                 page_title = self.driver.title.encode('utf-8').lower()
             # If grabbing the title fails because of an existing alert, dismiss it
             except UnexpectedAlertPresentException:
@@ -359,7 +361,7 @@ class TestSuite(unittest.TestCase):
 
             #  Check for an Apology page redirect
             self.assertNotRegexpMatches(self.driver.current_url, r'apology|outage', 1)
-
+            
             #  Check for errors in the page title
             self.assertNotRegexpMatches(page_title, r'\D?[45]\d\d\D', 2)
             self.assertNotRegexpMatches(page_title, r'problem|failed|not\savailable|error|denied', 3)
@@ -370,8 +372,7 @@ class TestSuite(unittest.TestCase):
                     neterror = self.driver.find_element_by_xpath('/html/body[@class="neterror"]//div[@id="main-message"]').get_attribute('innerText')
                 except:
                     neterror = False
-            else:
-                neterror = False
+
             self.assertEqual(neterror, False)
 
             #  If no page title, check for blank page
@@ -395,7 +396,7 @@ class TestSuite(unittest.TestCase):
                     info['error'] = access_error
                     self.test.TestResults(info)
 
-                # Handle PNNL "Toast" errors
+                # Handle "Toast" errors
                 elif toast_error:
                     info['status'] = 'Failed'
                     info['error'] = toast_error
@@ -424,7 +425,7 @@ class TestSuite(unittest.TestCase):
                         info['status'] = "Passed"
                         self.test.TestResults(info)
 
-                # Handle redirect to apology page """
+                # Handle redirect to apology page
                 elif errornum == "1":
                     try:
                         heading = self.driver.find_element_by_tag_name('h1').get_attribute('innerHTML')
