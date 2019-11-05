@@ -329,7 +329,7 @@ class TestSuite(unittest.TestCase):
                             result = dependency.get(key)
                             if result == None:
                                 failed = {"error": "The provided key was not found in the Health Check results"}
-                            elif result not in [True, "True", "true", 1]:
+                            elif str(result).lower() not in ["true", "1"]:
                                 failed = dependency
             self.assertEqual(failed, False)
             self.test.TestFinish()
