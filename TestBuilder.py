@@ -138,13 +138,12 @@ def TestGenerator(app, screenshot_always=False):
             'Health': self.health_check
         }
 
-        # Clear performance logs before each new test
-        if app['BROWSER'] == "Chrome":
-            self.driver.get_log('performance')
-
         for step in app["TESTS"]:
             if int(step['enabled']) == 1:
                 try:
+                    # Clear performance logs before each new test
+                    if app['BROWSER'] == "Chrome" and step["command"] in ["Open", "Click"]:
+                        self.driver.get_log('performance')
                     # Launch appropriate command from the testCommands library
                     self.assertEquals(testCommands[step["command"]](**step), True)
                 except:
