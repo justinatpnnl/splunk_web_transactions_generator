@@ -143,7 +143,8 @@ def TestGenerator(app, screenshot_always=False):
                 try:
                     # Clear performance logs before each new test
                     if app['BROWSER'] == "Chrome" and step["command"] in ["Open", "Click"]:
-                        self.driver.get_log('performance')
+                        while len(self.driver.get_log('performance')) > 0:
+                            pass
                     # Launch appropriate command from the testCommands library
                     self.assertEquals(testCommands[step["command"]](**step), True)
                 except:
