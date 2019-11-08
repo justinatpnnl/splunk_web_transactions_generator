@@ -158,7 +158,7 @@ def TestGenerator(app, screenshot_always=False):
                 self.test.results['results']['screenshot'] = getScreenshot(self.driver)
             if app['BROWSER'] == "Chrome":
                 logs = self.driver.get_log('performance')
-                self.test.results['logs'] = [json.loads(log['message'])['message'] for log in logs if json.loads(log['message'])['message']['method'].startswith('Network')]
+                self.test.results['results']['logs'] = [json.loads(log['message'])['message'] for log in logs if json.loads(log['message'])['message']['method'].startswith('Network')]
 
         self.test.WriteResults()
     return applicationTest
