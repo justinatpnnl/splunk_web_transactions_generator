@@ -1,5 +1,7 @@
 # splunk_web_transactions_generator
-Use test information stored in a Splunk KVStore to generate Selenium tests
+Use test information stored in a Splunk KVStore to generate Selenium tests.
+
+To see an example of how this can be integrated into an app or a scripted input, see https://github.com/justinatpnnl/selenium_demo_app.
 
 ## Notice
 
