@@ -139,7 +139,10 @@ def TestGenerator(app, screenshot_always=False):
             'Find': self.find_element,
             'Click': self.click_element,
             'Type': self.enter_text,
-            'Health': self.health_check
+            'Health': self.health_check,
+            'Switch to': self.switch_to,
+            'Wait': self.wait_for_it,
+            'Get attribute': self.get_current_element_attribute
         }
 
         for step in app["TESTS"]:
@@ -259,11 +262,61 @@ class TestSuite(unittest.TestCase):
         }
         return WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((byCommand.get(name), value)))
 
+    def wait_for_it(self, **info):
+        info["description"] = "Wait {0} seconds".format(info["seconds"])
+        self.test.TestStart()
+        try:
+            time.sleep(int(info.get("seconds")))
+            self.test.TestFinish()
+            info['status'] = "Passed"
+            self.test.TestResults(info)
+            return True
+        except:
+            self.test.TestFinish()
+            info['status'] = "Failed"
+            self.test.TestResults(info)
+            return False
+
+    def get_current_element_attribute(self, **info):
+        info["description"] = "Get \"{0}\" attribute of current element".format(info.get("attribute"))
+        self.test.TestStart()
+        try:
+            info[info.get("attribute")] = self.current_element.get_attribute(info.get("attribute"))
+            self.test.TestFinish()
+            info['status'] = "Passed"
+            self.test.TestResults(info)
+            return True
+        except:
+            self.test.TestFinish()
+            info['status'] = "Failed"
+            info['error'] = "Unable to get \"{0}\" attribute of current element".format(info["attribute"])
+            self.test.TestResults(info)
+            return False
+
     def find_element(self, **info):
         info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
         self.test.TestStart()
         try:
             self.current_element = self.get_element(info["element_name"], info["element_value"])
+            self.test.TestFinish()
+            info['status'] = "Passed"
+            self.test.TestResults(info)
+            return True
+        except:
+            self.test.TestFinish()
+            info['status'] = "Failed"
+            info['error'] = "Unable to locate element: {0}=\"{1}\"".format(info["element_name"], info["element_value"])
+            self.test.TestResults(info)
+            return False
+
+    def switch_to(self, **info):
+        info["description"] = "{0} {1} with name \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
+        self.test.TestStart()
+        try:
+            if info.get("element_name") == "Frame":
+                self.driver.switch_to.default_content()
+                frame = self.get_element("name", info.get("element_value"))
+                self.driver.switch_to.frame(frame)
             self.test.TestFinish()
             info['status'] = "Passed"
             self.test.TestResults(info)
