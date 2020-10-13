@@ -15,7 +15,6 @@ from TestConfig import TestSettings
 import unittest, platform, re, json, urllib2, socket, os
 import time
 
-
 class TestResults():
     def __init__(self, environment, app):
         try:
@@ -37,7 +36,7 @@ class TestResults():
             },
             "results": {
                 "duration": 0,
-                "tests_count": len([d for d in app['TESTS'] if int(d['enabled']) == 1])
+                "tests_count": len([d for d in app['TESTS'] if int(d.get('enabled',0)) == 1])
             },
             "tests": []
         }
@@ -143,7 +142,7 @@ def TestGenerator(app, screenshot_always=False):
         }
 
         for step in app["TESTS"]:
-            if int(step['enabled']) == 1:
+            if int(step.get('enabled',0)) == 1:
                 try:
                     # Clear performance logs before each new test
                     if app['BROWSER'] == "Chrome" and step["command"] in ["Open", "Click"]:
