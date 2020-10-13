@@ -8,6 +8,7 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from ua_parser import user_agent_parser
 from HTMLParser import HTMLParser
@@ -256,7 +257,7 @@ class TestSuite(unittest.TestCase):
             "class_name": By.CLASS_NAME,
             "css_selector": By.CSS_SELECTOR
         }
-        return self.driver.find_element(byCommand.get(name), value)
+        return WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((byCommand.get(name), value)))
 
     def find_element(self, **info):
         info["description"] = "{0} element with {1} \"{2}\"".format(info["command"], info["element_name"], info["element_value"])
