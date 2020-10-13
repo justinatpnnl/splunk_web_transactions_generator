@@ -145,7 +145,7 @@ def TestGenerator(app, screenshot_always=False):
             if int(step.get('enabled',0)) == 1:
                 try:
                     # Clear performance logs before each new test
-                    if app['BROWSER'] == "Chrome" and step["command"] in ["Open", "Click"]:
+                    if app['BROWSER'] in ["Chrome","ChromeIncognito"] and step["command"] in ["Open", "Click"]:
                         while len(self.driver.get_log('performance')) > 0:
                             pass
                     # Launch appropriate command from the testCommands library
@@ -160,7 +160,7 @@ def TestGenerator(app, screenshot_always=False):
                 self.test.results['screenshot'] = getScreenshot(self.driver)
             else:
                 self.test.results['results']['screenshot'] = getScreenshot(self.driver)
-            if app['BROWSER'] == "Chrome":
+            if app['BROWSER'] in ["Chrome","ChromeIncognito"]:
                 logs = self.driver.get_log('performance')
                 self.test.results['results']['logs'] = [json.loads(log['message'])['message'] for log in logs if json.loads(log['message'])['message']['method'].startswith('Network')]
 
@@ -172,13 +172,16 @@ def launchBrowser(browser):
     hub = "{0}://{1}:{2}/wd/hub".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'))
     sitelist = TestSettings.get("BrowserSettings", "sitelist")
 
-    if browser == "Chrome":
+    if browser in ["Chrome","ChromeIncognito"]:
         # START CHROME BROWSER
         options = webdriver.ChromeOptions()
         
         options.add_argument("auth-server-whitelist={0}".format(sitelist))
         options.add_argument("auth-negotiate-delegatewhitelist={0}".format(sitelist))
         options.add_argument("auth-schemes=digest,ntlm,negotiate")
+        options.add_argument("--disable-http2")
+        if browser == "ChromeIncognito":
+            options.add_argument("--incognito")
         
         capabilities = options.to_capabilities()
         capabilities['goog:loggingPrefs'] = { 'performance':'ALL' }
@@ -399,7 +402,7 @@ class TestSuite(unittest.TestCase):
             self.assertNotRegexpMatches(page_title, r'problem|failed|not\savailable|error|denied', 3)
 
             #  Check for neterror class on body in Chrome
-            if self.test.results['environment']['browser']['name'] == "Chrome":
+            if self.test.results['environment']['browser']['name'] in ["Chrome","ChromeIncognito"]:
                 try:
                     neterror = self.driver.find_element_by_xpath('/html/body[@class="neterror"]//div[@id="main-message"]').get_attribute('innerText')
                 except:
