@@ -84,18 +84,22 @@ def getEnvironmentDetails(driver):
     ua_string = driver.execute_script("return navigator.userAgent")
     ua = user_agent_parser.Parse(ua_string)
     # GET NODE INFO
-    session = driver.session_id
-    url = "{0}://{1}:{2}/grid/api/testsession?session={3}".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'), session)
-    req = urllib2.Request(url)
-    req.add_header("Content-Type", "application/json")
-    response = urllib2.urlopen(req)
-    node = json.loads(response.read())
-    response.close()
-    ip = re.search('\/\/([^\:]+)\:', node.get('proxyId')).group(1)
     try:
-        host = socket.gethostbyaddr(ip)[0]
+        session = driver.session_id
+        url = "{0}://{1}:{2}/grid/api/testsession?session={3}".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'), session)
+        req = urllib2.Request(url)
+        req.add_header("Content-Type", "application/json")
+        response = urllib2.urlopen(req)
+        node = json.loads(response.read())
+        response.close()
+        ip = re.search('\/\/([^\:]+)\:', node.get('proxyId')).group(1)
+        try:
+            host = socket.gethostbyaddr(ip)[0]
+        except:
+            host = ip
     except:
-        host = ip
+        host = "unknown"
+        ip = "unknown"
     environment = {
         'browser': {
             "name": ua['user_agent']['family'],
