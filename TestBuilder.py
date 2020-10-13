@@ -421,6 +421,11 @@ class TestSuite(unittest.TestCase):
             self.driver.get(info["url"])
             try:
                 page_title = self.driver.title.encode('utf-8').lower()
+                # Check for blank title
+                if len(page_title) == 0:
+                    # Pause a couple of seconds to wait for potential redirects and try grabbing the title again
+                    time.sleep(2)
+                    page_title = self.driver.title.encode('utf-8').lower()
             # If grabbing the title fails because of an existing alert, dismiss it
             except UnexpectedAlertPresentException:
                 try:
