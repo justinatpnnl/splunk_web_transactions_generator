@@ -11,9 +11,9 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from ua_parser import user_agent_parser
-from HTMLParser import HTMLParser
-from TestConfig import TestSettings
-import unittest, platform, re, json, urllib2, socket, os
+from .TestConfig import TestSettings
+from urllib.request import urlopen
+import unittest, re, json, socket
 import time
 
 class TestResults():
@@ -87,9 +87,7 @@ def getEnvironmentDetails(driver):
     try:
         session = driver.session_id
         url = "{0}://{1}:{2}/grid/api/testsession?session={3}".format(TestSettings.get('SeleniumHub', 'protocol'), TestSettings.get('SeleniumHub', 'host'), TestSettings.get('SeleniumHub', 'port'), session)
-        req = urllib2.Request(url)
-        req.add_header("Content-Type", "application/json")
-        response = urllib2.urlopen(req)
+        response = urlopen(url)
         node = json.loads(response.read())
         response.close()
         ip = re.search('\/\/([^\:]+)\:', node.get('proxyId')).group(1)
