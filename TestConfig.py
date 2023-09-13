@@ -15,6 +15,8 @@ if not os.path.isfile(configfile_path):
     TestSettings.set('SeleniumHub', 'port', '4444')
     TestSettings.add_section('BrowserSettings')
     TestSettings.set('BrowserSettings', 'sitelist', '')
+    TestSettings.add_section('UserInfo')
+    TestSettings.set('UserInfo', 'email', '')
     TestSettings.write(cfgfile)
     cfgfile.close()
 else:
