@@ -1,8 +1,8 @@
 import os
-import ConfigParser
+import configparser
 
 configfile_path = os.path.join(os.path.dirname(__file__), "settings.conf")
-TestSettings = ConfigParser.ConfigParser()
+TestSettings = configparser.ConfigParser()
 
 # Create configuration file if it doesn't exist
 if not os.path.isfile(configfile_path):
